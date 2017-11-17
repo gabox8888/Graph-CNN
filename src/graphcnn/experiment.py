@@ -7,6 +7,7 @@ import tensorflow as tf
 import glob
 import time
 from tensorflow.python.training import queue_runner
+import pdb
 
 # This function is used to create tf.cond compatible tf.train.batch alternative
 def _make_batch_queue(input, capacity, num_threads=1):
@@ -39,6 +40,8 @@ class GraphCNNExperiment(object):
         self.reports = {}
         self.silent = False
         self.optimizer = 'momentum'
+
+        self.custom_feed_dict = {}
         
         self.net_constructor = net_constructor
         self.net = GraphCNNNetwork()
@@ -140,7 +143,7 @@ class GraphCNNExperiment(object):
         adjacency.set_shape([None, self.graph_adjacency.shape[2], None])
         
         # V, A, labels, mask
-        return [vertices, adjacency, single_sample[2], tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1)]
+        return [vertices, adjacency, single_sample[2],tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1),single_sample[4]]
         
     def create_input_variable(self, input):
         for i in range(len(input)):
@@ -158,9 +161,9 @@ class GraphCNNExperiment(object):
                     self.print_ext('Creating training Tensorflow Tensors')
                     
                     # Create tensor with all training samples
-                    training_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size]
+                    training_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size,self.graph_masks]
                     training_samples = [s[self.train_idx, ...] for s in training_samples]
-                    
+
                     if self.crop_if_possible == False:
                         training_samples[3] = get_node_mask(training_samples[3], max_size=self.graph_vertices.shape[1])
                         
@@ -183,7 +186,7 @@ class GraphCNNExperiment(object):
                     self.print_ext('Creating test Tensorflow Tensors')
                     
                     # Create tensor with all test samples
-                    test_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size]
+                    test_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size,self.graph_masks]
                     test_samples = [s[self.test_idx, ...] for s in test_samples]
                     
                     # If using mini-batch we will need a queue 
@@ -301,7 +304,11 @@ class GraphCNNExperiment(object):
             
             with tf.control_dependencies(update_ops):
                 if self.optimizer == 'adam':
-                    train_step = tf.train.AdamOptimizer().minimize(loss, global_step=self.net.global_step)
+                    optimizer = tf.train.AdamOptimizer()
+                    gradients = optimizer.compute_gradients(loss)
+                    capped_gradients = [(tf.clip_by_value(grad, -5., 5.), var) for grad, var in gradients if grad is not None]
+                    train_step = optimizer.apply_gradients(capped_gradients)
+                    # train_step = tf.train.AdamOptimizer().minimize(loss, global_step=self.net.global_step)
                 else:
                     self.learning_rate = tf.train.exponential_decay(self.starter_learning_rate, self.net.global_step, self.learning_rate_step, self.learning_rate_exp, staircase=True)
                     train_step = tf.train.MomentumOptimizer(self.learning_rate, 0.9).minimize(loss, global_step=self.net.global_step)
@@ -337,8 +344,13 @@ class GraphCNNExperiment(object):
                             self.save_model(sess, saver, i)
                         if i % self.iterations_per_test == 0:
                             start_temp = time.time()
-                            summary, reports = sess.run([summary_merged, self.reports], feed_dict={self.net.is_training:0})
+                            self.custom_feed_dict[self.net.is_training] = 0
+                            pred = tf.identity(self.net.pred , name='predictions')
+                            gold = tf.identity(self.net.labels , name='predictions')
+                            summary, reports,var,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
                             total_testing += time.time() - start_temp
+                            self.print_ext(self.print_sample(var[0]))
+                            self.print_ext(self.print_sample(gold[0]))
                             self.print_ext('Test Step %d Finished' % i)
                             for key, value in reports.items():
                                 self.print_ext('Test Step %d "%s" = ' % (i, key), value)
@@ -346,7 +358,8 @@ class GraphCNNExperiment(object):
                                 test_writer.add_summary(summary, i)
                             
                         start_temp = time.time()
-                        summary, _, reports = sess.run([summary_merged, train_step, self.reports], feed_dict={self.net.is_training:1})
+                        self.custom_feed_dict[self.net.is_training] = 1
+                        summary, _, reports = sess.run([summary_merged, train_step, self.reports], feed_dict=self.custom_feed_dict)
                         total_training += time.time() - start_temp
                         i += 1
                         if ((i-1) % self.display_iter) == 0:
@@ -362,7 +375,8 @@ class GraphCNNExperiment(object):
                             total_testing = 0.0
                             start_at = time.time()
                     if i % self.iterations_per_test == 0:
-                        summary = sess.run(summary_merged, feed_dict={self.net.is_training:0})
+                        self.custom_feed_dict[self.net.is_training] = 0
+                        summary = sess.run(summary_merged, feed_dict=self.custom_feed_dict)
                         if self.debug == False:
                             test_writer.add_summary(summary, i)
                         self.print_ext('Test Step %d Finished' % i)
@@ -424,18 +438,20 @@ class SingleGraphCNNExperiment(GraphCNNExperiment):
                 adjacency = self.graph_adjacency[:, self.train_idx, :, :]
                 adjacency = adjacency[:, :, :, self.train_idx]
                 labels = self.graph_labels[:, self.train_idx]
+                graph_mask = self.graph_masks[:, self.train_idx]
                 input_mask = np.ones([1, len(self.train_idx), 1]).astype(np.float32)
                 
-                train_input = [vertices, adjacency, labels, input_mask]
+                train_input = [vertices, adjacency, labels, input_mask,graph_mask]
                 train_input = self.create_input_variable(train_input)
                 
                 vertices = self.graph_vertices
                 adjacency = self.graph_adjacency
                 labels = self.graph_labels
+                graph_mask = self.graph_masks
                 
                 input_mask = np.zeros([1, self.largest_graph, 1]).astype(np.float32)
                 input_mask[:, self.test_idx, :] = 1
-                test_input = [vertices, adjacency, labels, input_mask]
+                test_input = [vertices, adjacency, labels, input_mask,graph_mask]
                 test_input = self.create_input_variable(test_input)
                 
                 return tf.cond(self.net.is_training, lambda: train_input, lambda: test_input)
@@ -467,3 +483,51 @@ class SingleGraphCNNExperiment(GraphCNNExperiment):
             self.reports['accuracy'] = accuracy
             self.reports['max acc.'] = max_acc
             self.reports['cross_entropy'] = cross_entropy
+
+
+class GraphCNNWithRNNExperiment(GraphCNNExperiment):
+    def preprocess_data(self, dataset):
+        self.graph_size = np.array([s.shape[0] for s in dataset[0]]).astype(np.int64)
+        
+        self.largest_graph = max(self.graph_size)
+        self.print_ext('Padding samples')
+        self.graph_vertices = []
+        self.graph_adjacency = []
+        for i in range(len(dataset[0])):
+            # pad all vertices to match size
+            self.graph_vertices.append(np.pad(dataset[0][i].astype(np.float32), ((0, self.largest_graph-dataset[0][i].shape[0]), (0, 0)), 'constant', constant_values=(0)))
+
+            # pad all adjacency matrices to match size
+            self.graph_adjacency.append(np.pad(dataset[1][i].astype(np.float32), ((0, self.largest_graph-dataset[1][i].shape[0]), (0, 0), (0, self.largest_graph-dataset[1][i].shape[0])), 'constant', constant_values=(0)))
+            
+        self.print_ext('Stacking samples')
+        self.graph_vertices = np.stack(self.graph_vertices, axis=0)
+        self.graph_adjacency = np.stack(self.graph_adjacency, axis=0)
+        self.graph_labels = dataset[2]
+        self.graph_masks = dataset[3].astype(np.int32)
+        self.i_to_word = dataset[4]
+
+        self.no_samples = self.graph_labels.shape[0]
+        
+        single_sample = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size]
+
+    def print_sample(self,sample):
+        sample = [self.i_to_word[i] for i in sample]
+        return " ".join(sample)
+
+    def create_loss_function(self):
+        self.print_ext('Creating loss function and summaries')
+    
+        with tf.variable_scope('loss') as scope:
+            padded_size = self.net.mask.shape[1]
+            masks = tf.sequence_mask(tf.reduce_sum(self.net.mask, 1), padded_size, dtype=tf.float32, name='masks')           
+            loss = tf.contrib.seq2seq.sequence_loss(self.net.current_V,self.net.labels,masks)
+
+            tf.add_to_collection('losses', loss)
+            tf.summary.scalar('loss', loss)
+            
+
+            self.reports['cross_entropy'] = loss
+
+
+    

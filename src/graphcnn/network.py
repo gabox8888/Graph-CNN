@@ -1,5 +1,6 @@
 from graphcnn.layers import *
 from graphcnn.network_description import GraphCNNNetworkDescription
+from tensorflow.python.layers import core as layers_core
 
 class GraphCNNNetwork(object):
     def __init__(self):
@@ -8,12 +9,14 @@ class GraphCNNNetwork(object):
         self.current_mask = None
         self.labels = None
         self.network_debug = False
-        
+        self.pred = None
+                
     def create_network(self, input):
         self.current_V = input[0]
         self.current_A = input[1]
         self.labels = input[2]
         self.current_mask = input[3]
+        self.mask = input[4]
         
         if self.network_debug:
             size = tf.reduce_sum(self.current_mask, axis=1)
@@ -100,5 +103,46 @@ class GraphCNNNetwork(object):
         with tf.variable_scope(None, default_name='pool') as scope:
             dim = self.current_V.get_shape()[-1]
             self.current_V = tf.nn.max_pool(self.current_V, ksize=[1, 3, 3, 1], strides=[1, 2, 2, 1], padding=padding, name=scope.name)
+
+            return self.current_V
+
+    def make_rnn_layer(self,number_units,embedding_size,vocab_size):
+        def process_decoder_input(target_data, batch_size):
+            ending = tf.strided_slice(target_data, [0, 0], [batch_size, -1], [1, 1])
+            dec_input = tf.concat([tf.fill([batch_size, 1], 1), ending], 1)
+            return dec_input
+
+        def make_cell(rnn_size,init_range=0.8):
+            dec_cell = tf.contrib.rnn.LSTMCell(rnn_size,state_is_tuple=False,initializer=tf.random_uniform_initializer(-init_range, init_range, seed=2))
+            return dec_cell
+
+
+        with tf.variable_scope(None,default_name='decoder') as scope:
+            batch_size = tf.shape(self.current_V)[0]
+            dec_embeddings = tf.Variable(tf.random_uniform([vocab_size, embedding_size]))
+            dec_cell = tf.contrib.rnn.MultiRNNCell([make_cell(number_units) for _ in range(2)])
+            output_layer = layers_core.Dense(vocab_size, use_bias=False)
+
+            is_training = False
+            def training_decoder(): 
+                padded_size = tf.shape(self.mask)[1]
+                sequence_length = tf.multiply(padded_size, tf.ones([batch_size],dtype=tf.int32))
+                dec_input = process_decoder_input(self.labels,batch_size)
+                dec_embed_input = tf.nn.embedding_lookup(dec_embeddings, dec_input)
+                helper = tf.contrib.seq2seq.TrainingHelper(inputs=dec_embed_input,sequence_length=sequence_length,time_major=False)
+                decoder = tf.contrib.seq2seq.BasicDecoder(cell=dec_cell,helper=helper,initial_state=(self.current_V,self.current_V),output_layer=output_layer) 
+                decder_output = tf.contrib.seq2seq.dynamic_decode(decoder,impute_finished=True,maximum_iterations=padded_size)[0] 
+                return decder_output.rnn_output
+            def testing_decoder(): 
+                padded_size = 130
+                start_tokens = tf.tile(tf.constant([1], dtype=tf.int32), [batch_size], name='start_tokens')
+                helper = tf.contrib.seq2seq.GreedyEmbeddingHelper(dec_embeddings,start_tokens,2)
+                decoder = tf.contrib.seq2seq.BasicDecoder(cell=dec_cell,helper=helper,initial_state=(self.current_V,self.current_V),output_layer=output_layer) 
+                decder_output = tf.contrib.seq2seq.dynamic_decode(decoder,impute_finished=True,maximum_iterations=padded_size)[0] 
+                self.pred = tf.identity(decder_output.sample_id, name='predictions')
+                return training_decoder()
+
+
+            self.current_V = tf.cond(self.is_training,training_decoder,testing_decoder)
 
             return self.current_V
