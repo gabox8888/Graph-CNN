@@ -1,7 +1,7 @@
 from graphcnn.experiment import *
 import pickle
 
-root = "..\\datasets\\amr\\"
+root = ".\\datasets\\amr\\"
 
 adj = np.load(root + 'adjacency.npy')  
 vertex = np.load(root + 'vertex.npy')  
