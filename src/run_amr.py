@@ -3,10 +3,22 @@ import pickle
 
 root = "./datasets/amr/"
 
-adj = np.load(root + 'adjacency.npy')  
-vertex = np.load(root + 'vertex.npy')  
-labels = np.load(root + 'labels.npy')  
-masks = np.load(root + 'masks.npy')  
+adj = []
+vertex = []
+labels = []
+masks = []
+
+for i in range(10311):
+    if i % 1000 == 0 : print("currently at {}".format(i))
+    adj += [np.load(root + 'adjacency_{}.npy'.format(i))]
+    vertex += [np.load(root + 'vertex_{}.npy'.format(i))]  
+    labels += [np.load(root + 'labels_{}.npy'.format(i))] 
+    masks += [np.load(root + 'masks_{}.npy'.format(i))]  
+
+adj = np.array(adj)
+vertex = np.array(vertex)
+labels = np.array(labels)
+masks = np.array(masks)
 i_word = pickle.load(open(root + 'amr_i_word.pkl','rb'))
 dataset = [adj,vertex,labels,masks,i_word]
 
