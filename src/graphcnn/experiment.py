@@ -398,7 +398,7 @@ class GraphCNNExperiment(object):
                     self.print_ext('Training completed, starting cleanup!')
                     coord.request_stop()
                     coord.join(threads)
-                    pickleFile = open('blue.pkl','wb')
+                    pickleFile = open('blue_greedy.pkl','wb')
                     pickle.dump(blue_score_arr,pickleFile,protocol=2)
                     pickleFile.close()  
                     self.print_ext('Cleanup completed!')
@@ -524,9 +524,9 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
     def save_for_eval(self,preds,golds,i,train):
         temp = []
-        for pred,gold in zip(preds,golds):
-            pred = [self.i_to_word[i] for i in pred]
-            gold = [self.i_to_word[i] for i in gold]
+        for i in range(len(preds)):
+            pred = [self.i_to_word[i] for i in preds[i]]
+            gold = [self.i_to_word[i] for i in golds[i]]
             temp += [(pred,gold)]
         blue_score_arr[(i,train)] = temp
 
