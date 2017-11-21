@@ -533,7 +533,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
 
     def print_sample(self,sample):
-        sample = [self.i_to_word[i] for i in sample]
+        sample = [self.i_to_word[i] for i in sample if t in self.i_to_word]
         return " ".join(sample)
 
     def create_loss_function(self):
