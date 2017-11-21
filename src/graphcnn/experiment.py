@@ -353,7 +353,7 @@ class GraphCNNExperiment(object):
                             summary, reports,pred,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
                             total_testing += time.time() - start_temp
                             self.save_for_eval(pred,gold,i,False)
-                            self.print_ext("Test: " + self.print_sample(pred[0]))
+                            self.print_ext("Test: " + self.print_sample(pred[0][randint(0,10)]))
                             self.print_ext("Test: " + self.print_sample(gold[0]))
                             self.print_ext('Test Step %d Finished' % i)
                             for key, value in reports.items():
@@ -533,7 +533,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
 
     def print_sample(self,sample):
-        sample = [self.i_to_word[i] for i in sample[randint(0,10)]]
+        sample = [self.i_to_word[i] for i in sample]
         return " ".join(sample)
 
     def create_loss_function(self):
