@@ -7,7 +7,9 @@ import tensorflow as tf
 import glob
 import time
 from tensorflow.python.training import queue_runner
-import pdb
+import pickle
+
+blue_score_arr = {}
 
 # This function is used to create tf.cond compatible tf.train.batch alternative
 def _make_batch_queue(input, capacity, num_threads=1):
@@ -349,6 +351,7 @@ class GraphCNNExperiment(object):
                             gold = tf.identity(self.net.labels , name='predictions')
                             summary, reports,var,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
                             total_testing += time.time() - start_temp
+                            self.save_for_eval(pred,gold,i,False)
                             self.print_ext(self.print_sample(var[0]))
                             self.print_ext(self.print_sample(gold[0]))
                             self.print_ext('Test Step %d Finished' % i)
@@ -359,7 +362,12 @@ class GraphCNNExperiment(object):
                             
                         start_temp = time.time()
                         self.custom_feed_dict[self.net.is_training] = 1
-                        summary, _, reports = sess.run([summary_merged, train_step, self.reports], feed_dict=self.custom_feed_dict)
+                        pred = tf.identity(self.net.pred , name='predictions')
+                        gold = tf.identity(self.net.labels , name='predictions')
+                        summary, _, reports,pred,gold = sess.run([summary_merged, train_step, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
+                        self.print_ext("Train: " + self.print_sample(var[0]))
+                        self.print_ext("Train: " + self.print_sample(gold[0]))
+                        self.save_for_eval(pred,gold,i,True)
                         total_training += time.time() - start_temp
                         i += 1
                         if ((i-1) % self.display_iter) == 0:
@@ -390,6 +398,9 @@ class GraphCNNExperiment(object):
                     self.print_ext('Training completed, starting cleanup!')
                     coord.request_stop()
                     coord.join(threads)
+                    pickleFile = open('blue.pkl','wb')
+                    pickle.dump(blue_score_arr,pickleFile,protocol=2)
+                    pickleFile.close()  
                     self.print_ext('Cleanup completed!')
                     if wasKeyboardInterrupt:
                         raise raisedEx
@@ -510,6 +521,15 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         self.no_samples = self.graph_labels.shape[0]
         
         single_sample = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size]
+
+    def save_for_eval(self,preds,golds,i,train):
+        temp = []
+        for pred,gold in zip(preds,golds):
+            pred = [self.i_to_word[i] for i in pred]
+            gold = [self.i_to_word[i] for i in gold]
+            temp += [(pred,gold)]
+        blue_score_arr[(i,train)] = temp
+
 
     def print_sample(self,sample):
         sample = [self.i_to_word[i] for i in sample]

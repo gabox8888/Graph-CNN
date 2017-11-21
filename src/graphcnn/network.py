@@ -134,6 +134,7 @@ class GraphCNNNetwork(object):
                 helper = tf.contrib.seq2seq.TrainingHelper(inputs=dec_embed_input,sequence_length=sequence_length,time_major=False)
                 decoder = tf.contrib.seq2seq.BasicDecoder(cell=dec_cell,helper=helper,initial_state=test,output_layer=output_layer) 
                 decder_output = tf.contrib.seq2seq.dynamic_decode(decoder,impute_finished=True,maximum_iterations=padded_size)[0] 
+                self.pred = tf.identity(decder_output.sample_id, name='predictions')
                 return decder_output.rnn_output
             def testing_decoder(): 
                 padded_size = 130
