@@ -524,10 +524,9 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
     def save_for_eval(self,preds,golds,i,train):
         temp = []
-        print("FUCCCCK",preds.shape[0])
         for i in range(int(preds.shape[0])):
-            pred = [self.i_to_word[i] for i in preds[i]]
-            gold = [self.i_to_word[i] for i in golds[i]]
+            pred = [self.i_to_word[j] for j in preds[i]]
+            gold = [self.i_to_word[j] for j in golds[i]]
             temp += [(pred,gold)]
         blue_score_arr[(i,train)] = temp
 
