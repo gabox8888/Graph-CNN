@@ -364,7 +364,7 @@ class GraphCNNExperiment(object):
                         self.custom_feed_dict[self.net.is_training] = 1
                         # pred = tf.identity(self.net.pred)
                         # gold = tf.identity(self.net.labels)
-                        summary, reports= sess.run([summary_merged, self.reports], feed_dict=self.custom_feed_dict)
+                        summary, _,reports= sess.run([summary_merged, train_step,self.reports], feed_dict=self.custom_feed_dict)
                         # self.save_for_eval(pred,gold,i,True)
                         total_training += time.time() - start_temp
                         i += 1
