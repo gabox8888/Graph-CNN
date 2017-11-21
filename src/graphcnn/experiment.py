@@ -8,6 +8,7 @@ import glob
 import time
 from tensorflow.python.training import queue_runner
 import pickle
+from random import randint
 
 blue_score_arr = {}
 
@@ -532,7 +533,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
 
     def print_sample(self,sample):
-        sample = [self.i_to_word[i] for i in sample]
+        sample = [self.i_to_word[i] for i in sample[randint(0,10)]]
         return " ".join(sample)
 
     def create_loss_function(self):
