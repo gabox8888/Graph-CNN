@@ -525,7 +525,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
     def save_for_eval(self,preds,golds,iter,train):
         temp = []
         for i in range(int(preds.shape[0])):
-            print(preds[i])
+            print(preds[i].shape)
             print(golds[i])
             pred = [self.i_to_word[j] for j in preds[i]]
             gold = [self.i_to_word[j] for j in golds[i]]
