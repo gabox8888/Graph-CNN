@@ -347,13 +347,13 @@ class GraphCNNExperiment(object):
                         if i % self.iterations_per_test == 0:
                             start_temp = time.time()
                             self.custom_feed_dict[self.net.is_training] = 0
-                            pred = tf.identity(self.net.pred , name='predictions')
-                            gold = tf.identity(self.net.labels , name='predictions')
+                            pred = tf.identity(self.net.pred )
+                            gold = tf.identity(self.net.labels)
                             summary, reports,pred,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
                             total_testing += time.time() - start_temp
                             self.save_for_eval(pred,gold,i,False)
-                            self.print_ext(self.print_sample(pred[0]))
-                            self.print_ext(self.print_sample(gold[0]))
+                            self.print_ext("Test: " + self.print_sample(pred[0]))
+                            self.print_ext("Test: " + self.print_sample(gold[0]))
                             self.print_ext('Test Step %d Finished' % i)
                             for key, value in reports.items():
                                 self.print_ext('Test Step %d "%s" = ' % (i, key), value)
@@ -362,10 +362,10 @@ class GraphCNNExperiment(object):
                             
                         start_temp = time.time()
                         self.custom_feed_dict[self.net.is_training] = 1
-                        pred = tf.identity(self.net.pred , name='predictions')
-                        gold = tf.identity(self.net.labels , name='predictions')
+                        pred = tf.identity(self.net.pred)
+                        gold = tf.identity(self.net.labels)
                         summary, _, reports,pred,gold = sess.run([summary_merged, train_step, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
-                        self.print_ext("Train: " + self.print_sample(var[0]))
+                        self.print_ext("Train: " + self.print_sample(pred[0]))
                         self.print_ext("Train: " + self.print_sample(gold[0]))
                         self.save_for_eval(pred,gold,i,True)
                         total_training += time.time() - start_temp
