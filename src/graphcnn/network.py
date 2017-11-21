@@ -137,8 +137,7 @@ class GraphCNNNetwork(object):
                 return decder_output.rnn_output
             def testing_decoder(): 
                 padded_size = 300
-                # start_tokens = tf.tile(tf.constant([1], dtype=tf.int32), [batch_size], name='start_tokens')
-                start_tokens = tf.fill([batch_size], 1)
+                start_tokens = tf.tile(tf.constant([1], dtype=tf.int32), [batch_size], name='start_tokens')
                 # helper = tf.contrib.seq2seq.GreedyEmbeddingHelper(dec_embeddings,start_tokens,2)
                 # decoder = tf.contrib.seq2seq.BasicDecoder(cell=dec_cell,helper=helper,initial_state=test,output_layer=output_layer) 
                 decoder = tf.contrib.seq2seq.BeamSearchDecoder(cell=dec_cell,embedding=dec_embeddings,start_tokens=start_tokens,end_token=2,initial_state=test,beam_width=16,output_layer=output_layer,length_penalty_weight=0.0)
