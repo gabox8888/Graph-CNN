@@ -144,7 +144,7 @@ class GraphCNNNetwork(object):
                 # decoder = tf.contrib.seq2seq.BasicDecoder(cell=dec_cell,helper=helper,initial_state=test,output_layer=output_layer) 
                 decoder = tf.contrib.seq2seq.BeamSearchDecoder(dec_cell,dec_embeddings,start_tokens,2,test,16,output_layer,0.0)
                 decder_output = tf.contrib.seq2seq.dynamic_decode(decoder,impute_finished=True,maximum_iterations=padded_size)[0] 
-                self.pred = tf.identity(decder_output.sample_id, name='predictions')
+                self.pred = tf.identity(decder_output.predicted_ids, name='predictions')
                 return training_decoder()
 
 
