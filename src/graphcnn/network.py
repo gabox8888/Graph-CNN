@@ -141,7 +141,7 @@ class GraphCNNNetwork(object):
                 end_token = tf.constant(2,shape=[1])
                 # helper = tf.contrib.seq2seq.GreedyEmbeddingHelper(dec_embeddings,start_tokens,2)
                 # decoder = tf.contrib.seq2seq.BasicDecoder(cell=dec_cell,helper=helper,initial_state=test,output_layer=output_layer) 
-                decoder = tf.contrib.seq2seq.BeamSearchDecoder(dec_cell,dec_embeddings,start_tokens,end_token,test,16,output_layer,None)
+                decoder = tf.contrib.seq2seq.BeamSearchDecoder(dec_cell,dec_embeddings,start_tokens,2,test,16,output_layer,None)
                 decder_output = tf.contrib.seq2seq.dynamic_decode(decoder,impute_finished=True,maximum_iterations=padded_size)[0] 
                 self.pred = tf.identity(decder_output.sample_id, name='predictions')
                 return training_decoder()
