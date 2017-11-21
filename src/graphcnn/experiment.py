@@ -349,10 +349,10 @@ class GraphCNNExperiment(object):
                             self.custom_feed_dict[self.net.is_training] = 0
                             pred = tf.identity(self.net.pred , name='predictions')
                             gold = tf.identity(self.net.labels , name='predictions')
-                            summary, reports,var,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
+                            summary, reports,pred,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
                             total_testing += time.time() - start_temp
                             self.save_for_eval(pred,gold,i,False)
-                            self.print_ext(self.print_sample(var[0]))
+                            self.print_ext(self.print_sample(pred[0]))
                             self.print_ext(self.print_sample(gold[0]))
                             self.print_ext('Test Step %d Finished' % i)
                             for key, value in reports.items():
