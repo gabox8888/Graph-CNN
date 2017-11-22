@@ -37,7 +37,7 @@ class AMRExperiment(object):
         net.make_fc_layer(300)
 
             
-        net.make_rnn_layer(300,200,6004)
+        net.make_rnn_layer(300,200,6504)
         
 exp = GraphCNNWithRNNExperiment('AMR', 'amr', AMRExperiment())
 
