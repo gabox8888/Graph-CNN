@@ -352,7 +352,7 @@ class GraphCNNExperiment(object):
                             gold = tf.identity(self.net.labels)
                             summary, reports,pred,gold = sess.run([summary_merged, self.reports,pred,gold], feed_dict=self.custom_feed_dict)
                             total_testing += time.time() - start_temp
-                            self.save_for_eval(pred,gold,i,False)
+                            self.save_for_eval(pred.T,gold,i,False)
                             self.print_ext("Test: " + self.print_sample(pred[0].T[randint(0,9)]))
                             self.print_ext("Test: " + self.print_sample(gold[0]))
                             self.print_ext('Test Step %d Finished' % i)
@@ -526,7 +526,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
     def save_for_eval(self,preds,golds,iter,train):
         temp = []
         for i in range(int(preds.shape[0])):
-            pred = [[self.i_to_word[t] if t in self.i_to_word else "<U>" for t in j ] for j in preds.T[i]]
+            pred = [[self.i_to_word[t] if t in self.i_to_word else "<U>" for t in j ] for j in preds[i]]
             gold = [self.i_to_word[j] for j in golds[i]]
             temp += [(pred,gold)]
         blue_score_arr[iter] = temp
