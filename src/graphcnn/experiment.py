@@ -400,7 +400,7 @@ class GraphCNNExperiment(object):
                     self.print_ext('Training completed, starting cleanup!')
                     coord.request_stop()
                     coord.join(threads)
-                    pickleFile = open('blue_beam.pkl','wb')
+                    pickleFile = open('blue_beam2.pkl','wb')
                     pickle.dump(blue_score_arr,pickleFile,protocol=2)
                     pickleFile.close()  
                     self.print_ext('Cleanup completed!')
