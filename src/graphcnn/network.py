@@ -109,7 +109,7 @@ class GraphCNNNetwork(object):
     def make_rnn_layer(self,number_units,embedding_size,vocab_size):
         def process_decoder_input(target_data, batch_size):
             ending = tf.strided_slice(target_data, [0, 0], [batch_size, -1], [1, 1])
-            dec_input = tf.concat([tf.fill([batch_size, 1], 1), ending], 1)
+            dec_input = tf.concat([tf.cast(tf.fill([batch_size, 1], 1),tf.int64), ending], 1)
             return dec_input
 
         def make_cell(rnn_size,init_range=0.1):
