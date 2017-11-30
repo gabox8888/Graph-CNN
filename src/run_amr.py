@@ -8,7 +8,7 @@ vertex = []
 labels = []
 masks = []
 
-for i in range(10312):
+for i in range(10312,100000):
     if i % 1000 == 0 : print("currently at {}".format(i))
     adj += [np.load(root + 'adjacency_{}.npy'.format(i))]
     vertex += [np.load(root + 'vertex_{}.npy'.format(i))]  
