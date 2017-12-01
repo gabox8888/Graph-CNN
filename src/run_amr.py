@@ -3,22 +3,22 @@ import pickle
 
 root = "./datasets/amr/"
 
-adj = []
-vertex = []
-labels = []
-masks = []
+# adj = []
+# vertex = []
+# labels = []
+# masks = []
 
-for i in range(10312,30000):
-    if i % 1000 == 0 : print("currently at {}".format(i))
-    adj += [np.load(root + 'adjacency_{}.npy'.format(i))]
-    vertex += [np.load(root + 'vertex_{}.npy'.format(i))]  
-    labels += [np.load(root + 'labels_{}.npy'.format(i))] 
-    masks += [np.load(root + 'masks_{}.npy'.format(i))]  
+# for i in range(10312,30000):
+#     if i % 1000 == 0 : print("currently at {}".format(i))
+#     adj += [np.load(root + 'adjacency_{}.npy'.format(i))]
+#     vertex += [np.load(root + 'vertex_{}.npy'.format(i))]  
+#     labels += [np.load(root + 'labels_{}.npy'.format(i))] 
+#     masks += [np.load(root + 'masks_{}.npy'.format(i))]  
 
-adj = np.array(adj)
-vertex = np.array(vertex)
-labels = np.array(labels)
-masks = np.array(masks)
+# adj = np.array(adj)
+# vertex = np.array(vertex)
+# labels = np.array(labels)
+# masks = np.array(masks)
 i_word = pickle.load(open(root + 'amr_i_word.pkl','rb'))
 dataset = [adj,vertex,labels,masks,i_word]
 
@@ -47,6 +47,10 @@ exp.test_batch_size = 30
 exp.optimizer = 'adam'
 exp.debug = True
 
-exp.preprocess_data(dataset)
+# exp.preprocess_data(dataset)
+exp.min_num_file = 11000
+exp.self.max_num_file = 11500
+exp.root_dir =root
+exp.i_to_word = i_to_word
 acc, std = exp.run_kfold_experiments(no_folds=10)
 print_ext('10-fold: %.2f (+- %.2f)' % (acc, std))
