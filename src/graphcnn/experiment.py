@@ -548,10 +548,10 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     labels = []
                     masks = []
                     for i in all_files[:split]:
-                        adj += [self.root_dir + 'adjacency_{}.npy'.format(i))]
-                        vertex += [self.root_dir + 'vertex_{}.npy'.format(i))]  
-                        labels += [self.root_dir + 'labels_{}.npy'.format(i))] 
-                        masks += [self.root_dir 'masks_{}.npy'.format(i))]  
+                        adj += [self.root_dir + 'adjacency_{}.npy'.format(i)]
+                        vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
+                        labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
+                        masks += [self.root_dir 'masks_{}.npy'.format(i)]  
                     training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
