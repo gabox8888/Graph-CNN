@@ -51,6 +51,6 @@ exp.debug = True
 exp.min_num_file = 11000
 exp.max_num_file = 11500
 exp.root_dir = root
-exp.i_to_word = i_to_word
+exp.i_to_word = i_word
 acc, std = exp.run_kfold_experiments(no_folds=10)
 print_ext('10-fold: %.2f (+- %.2f)' % (acc, std))
