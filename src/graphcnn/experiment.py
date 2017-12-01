@@ -556,10 +556,10 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     training_samples = self.create_input_variable(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
-                    single_sample[0] = tf.py_func(readNumpy, single_sample[0],tf.float32)
-                    single_sample[1] = tf.py_func(readNumpy, single_sample[1],tf.float32)
-                    single_sample[2] = tf.py_func(readNumpy, single_sample[2],tf.float32)
-                    single_sample[3] = tf.py_func(readNumpy, single_sample[3],tf.float32)
+                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
+                    single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
+                    single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
                     train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
                 # Create the test queue
@@ -579,10 +579,10 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     training_samples = self.create_input_variable(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
-                    single_sample[0] = tf.py_func(readNumpy, single_sample[0],tf.float32)
-                    single_sample[1] = tf.py_func(readNumpy, single_sample[1],tf.float32)
-                    single_sample[2] = tf.py_func(readNumpy, single_sample[2],tf.float32)
-                    single_sample[3] = tf.py_func(readNumpy, single_sample[3],tf.float32)
+                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
+                    single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
+                    single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
                     test_queue = _make_batch_queue(single_sample, capacity=self.test_batch_size*2, num_threads=1)
                         
                 result = tf.cond(self.net.is_training, lambda: train_queue.dequeue_many(self.train_batch_size), lambda: test_queue.dequeue_many(self.test_batch_size))
