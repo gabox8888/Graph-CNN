@@ -20,7 +20,7 @@ root = "./datasets/amr/"
 # labels = np.array(labels)
 # masks = np.array(masks)
 i_word = pickle.load(open(root + 'amr_i_word.pkl','rb'))
-dataset = [adj,vertex,labels,masks,i_word]
+# dataset = [adj,vertex,labels,masks,i_word]
 
 # Decay value for BatchNorm layers, seems to work better with 0.3
 GraphCNNGlobal.BN_DECAY = 0.3
