@@ -400,7 +400,7 @@ class GraphCNNExperiment(object):
                     self.print_ext('Training completed, starting cleanup!')
                     coord.request_stop()
                     coord.join(threads)
-                    pickleFile = open('blue_beam2.pkl','wb')
+                    pickleFile = open('blue_beam3.pkl','wb')
                     pickle.dump(blue_score_arr,pickleFile,protocol=2)
                     pickleFile.close()  
                     self.print_ext('Cleanup completed!')
@@ -618,7 +618,8 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
             tf.add_to_collection('losses', loss)
             tf.summary.scalar('loss', loss)
             
-
+            # self.reports['accuracy'] = 0
+            # self.reports['max acc.'] = 0
             self.reports['cross_entropy'] = loss
 
 
