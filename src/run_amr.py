@@ -8,7 +8,7 @@ vertex = []
 labels = []
 masks = []
 
-for i in range(10312,100000):
+for i in range(10312,30000):
     if i % 1000 == 0 : print("currently at {}".format(i))
     adj += [np.load(root + 'adjacency_{}.npy'.format(i))]
     vertex += [np.load(root + 'vertex_{}.npy'.format(i))]  
@@ -47,11 +47,11 @@ exp.test_batch_size = 30
 exp.optimizer = 'adam'
 exp.debug = True
 
-# exp.preprocess_data(dataset)
-exp.min_num_file = 11000
-exp.max_num_file = 11500
-exp.root_dir = root
-exp.i_to_word = i_word
-exp.no_samples = 500
+exp.preprocess_data(dataset)
+# exp.min_num_file = 11000
+# exp.max_num_file = 11500
+# exp.root_dir = root
+# exp.i_to_word = i_word
+# exp.no_samples = 500
 acc, std = exp.run_kfold_experiments(no_folds=10)
 print_ext('10-fold: %.2f (+- %.2f)' % (acc, std))
