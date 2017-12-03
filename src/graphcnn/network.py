@@ -3,7 +3,7 @@ from graphcnn.network_description import GraphCNNNetworkDescription
 from tensorflow.python.layers import core as layers_core
 import pdb
 
-use_encoding = False
+use_encoding = True
 
 class GraphCNNNetwork(object):
     def __init__(self):
@@ -148,7 +148,7 @@ class GraphCNNNetwork(object):
                 temp2 = tf.shape(self.current_V)
                 temp1 = tf.Print(temp1, [temp1], message="This is enc_state shape: ")
                 temp2 = tf.Print(temp2, [temp2], message="This is current_v shape: ")
-                test = tf.contrib.rnn.LSTMStateTuple(tf.concat([self.current_V, enc_state.c], 0) ,tf.concat([self.current_V, enc_state.h], 0))
+                test = tf.contrib.rnn.LSTMStateTuple(tf.concat([self.current_V, enc_state.c], 0) ,self.current_V) #tf.concat([self.current_V, enc_state.h], 0)
                 print(test)
                 pdb.set_trace()
             else:
