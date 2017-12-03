@@ -115,11 +115,11 @@ class GraphCNNNetwork(object):
 
     def make_rnn_layer(self,number_units,embedding_size,vocab_size):
 
-        def encoding_layer( source_vocab_size, encoding_embedding_size,batch_size):
+        def encoding_layer( source_vocab_size,batch_size):
             padded_size = tf.shape(self.linear_mask)[1]
             source_sequence_length = tf.multiply(padded_size, tf.ones([batch_size],dtype=tf.int32))
             # Encoder embedding
-            enc_embed_input = tf.contrib.layers.embed_sequence(self.linear, source_vocab_size, encoding_embedding_size)
+            enc_embed_input = tf.contrib.layers.embed_sequence(self.linear, source_vocab_size, embedding_size)
 
             enc_cell = make_cell(number_units)
 
@@ -142,7 +142,7 @@ class GraphCNNNetwork(object):
 
 
             if use_encoding:
-                _,enc_state = encoding_layer(6004,200,batch_size)
+                _,enc_state = encoding_layer(6004,batch_size)
                 print(enc_state)
                 temp1 = tf.shape(enc_state)
                 temp2 = tf.shape(self.current_V)
