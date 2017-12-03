@@ -3,7 +3,7 @@ from graphcnn.network_description import GraphCNNNetworkDescription
 from tensorflow.python.layers import core as layers_core
 import pdb
 
-use_encoding = True
+use_encoding = False
 
 class GraphCNNNetwork(object):
     def __init__(self):
@@ -153,6 +153,8 @@ class GraphCNNNetwork(object):
                 pdb.set_trace()
             else:
                 test = tf.contrib.rnn.LSTMStateTuple(self.current_V,self.current_V)
+                print(test)
+                pdb.set_trace()
 
             dec_embeddings = tf.Variable(tf.random_uniform([vocab_size, embedding_size]))
             dec_cell = make_cell(number_units) #tf.contrib.rnn.MultiRNNCell([make_cell(number_units) for _ in range(1)])
