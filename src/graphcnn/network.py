@@ -1,6 +1,7 @@
 from graphcnn.layers import *
 from graphcnn.network_description import GraphCNNNetworkDescription
 from tensorflow.python.layers import core as layers_core
+import pdb
 
 use_encoding = True
 
@@ -149,6 +150,7 @@ class GraphCNNNetwork(object):
                 temp2 = tf.Print(temp2, [temp2], message="This is current_v shape: ")
                 test = tf.contrib.rnn.LSTMStateTuple(tf.concat([self.current_V, enc_state.c], 1) ,tf.concat([self.current_V, enc_state.h], 0))
                 print(test)
+                pdb.set_trace()
             else:
                 test = tf.contrib.rnn.LSTMStateTuple(self.current_V,self.current_V)
 
