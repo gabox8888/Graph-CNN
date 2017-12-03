@@ -144,9 +144,9 @@ class GraphCNNNetwork(object):
                 _,enc_state = encoding_layer(6004,300,batch_size)
                 print(enc_state)
                 temp1 = tf.shape(enc_state)
-                self.current_V = tf.shape(self.current_V)
+                temp2 = tf.shape(self.current_V)
                 temp1 = tf.Print(temp1, [temp1], message="This is enc_state shape: ")
-                self.current_V = tf.Print(self.current_V, [self.current_V], message="This is current_v: ")
+                temp2 = tf.Print(temp2, [temp2], message="This is current_v shape: ")
                 
 
 
