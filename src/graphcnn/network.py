@@ -3,7 +3,7 @@ from graphcnn.network_description import GraphCNNNetworkDescription
 from tensorflow.python.layers import core as layers_core
 import pdb
 
-use_encoding = True
+use_encoding = False
 
 class GraphCNNNetwork(object):
     def __init__(self):
