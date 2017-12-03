@@ -141,7 +141,7 @@ class GraphCNNNetwork(object):
 
 
             if use_encoding:
-                _,enc_state = encoding_layer(6004,300,batch_size)
+                _,enc_state = encoding_layer(6004,200,batch_size)
                 print(enc_state)
                 temp1 = tf.shape(enc_state)
                 temp2 = tf.shape(self.current_V)
