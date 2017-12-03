@@ -2,12 +2,16 @@ from graphcnn.layers import *
 from graphcnn.network_description import GraphCNNNetworkDescription
 from tensorflow.python.layers import core as layers_core
 
+use_encoding = True
+
 class GraphCNNNetwork(object):
     def __init__(self):
         self.current_V = None
         self.current_A = None
         self.current_mask = None
         self.labels = None
+        self.linear = None
+        self.linear_mask = None
         self.network_debug = False
         self.pred = None
                 
@@ -17,6 +21,8 @@ class GraphCNNNetwork(object):
         self.labels = input[2]
         self.current_mask = input[3]
         self.mask = input[4]
+        self.linear = input[5]
+        self.linear_mask = input[6]
         
         if self.network_debug:
             size = tf.reduce_sum(self.current_mask, axis=1)
@@ -107,6 +113,19 @@ class GraphCNNNetwork(object):
             return self.current_V
 
     def make_rnn_layer(self,number_units,embedding_size,vocab_size):
+
+        def encoding_layer( source_vocab_size, encoding_embedding_size,batch_size):
+            padded_size = tf.shape(self.linear_mask)[1]
+            source_sequence_length = tf.multiply(padded_size, tf.ones([batch_size],dtype=tf.int32))
+            # Encoder embedding
+            enc_embed_input = tf.contrib.layers.embed_sequence(self.linear, source_vocab_size, encoding_embedding_size)
+
+            enc_cell = make_cell(number_units)
+
+            enc_output, enc_state = tf.nn.dynamic_rnn(enc_cell, enc_embed_input, sequence_length=source_sequence_length, dtype=tf.float32)
+            
+            return enc_output, enc_state
+
         def process_decoder_input(target_data, batch_size):
             ending = tf.strided_slice(target_data, [0, 0], [batch_size, -1], [1, 1])
             dec_input = tf.concat([tf.cast(tf.fill([batch_size, 1], 1),tf.int64), ending], 1)
@@ -119,6 +138,18 @@ class GraphCNNNetwork(object):
 
         with tf.variable_scope(None,default_name='decoder') as scope:
             batch_size = tf.shape(self.current_V)[0]
+
+
+            if use_encoding:
+                _,enc_state = encoding_layer(6004,300,batch_size)
+                print(enc_state)
+                temp1 = tf.shape(enc_state)
+                self.current_V = tf.shape(self.current_V)
+                temp1 = tf.Print(temp1, [temp1], message="This is enc_state shape: ")
+                self.current_V = tf.Print(self.current_V, [self.current_V], message="This is current_v: ")
+                
+
+
             dec_embeddings = tf.Variable(tf.random_uniform([vocab_size, embedding_size]))
             dec_cell = make_cell(number_units) #tf.contrib.rnn.MultiRNNCell([make_cell(number_units) for _ in range(1)])
             output_layer = layers_core.Dense(vocab_size, use_bias=False)
