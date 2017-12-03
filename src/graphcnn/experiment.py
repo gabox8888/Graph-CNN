@@ -147,7 +147,7 @@ class GraphCNNExperiment(object):
         adjacency.set_shape([None, self.graph_adjacency.shape[2], None])
         
         # V, A, labels, mask
-        return [vertices, adjacency, single_sample[2],tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1),single_sample[4]]
+        return [vertices, adjacency, single_sample[2],tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1),single_sample[4],single_sample[5],single_sample[6]]
         
     def create_input_variable(self, input):
         for i in range(len(input)):
@@ -165,7 +165,7 @@ class GraphCNNExperiment(object):
                     self.print_ext('Creating training Tensorflow Tensors')
                     
                     # Create tensor with all training samples
-                    training_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size,self.graph_masks]
+                    training_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size,self.graph_masks,self.graph_linear,self.graph_linear_mask]
                     training_samples = [s[self.train_idx, ...] for s in training_samples]
 
                     if self.crop_if_possible == False:
@@ -190,7 +190,7 @@ class GraphCNNExperiment(object):
                     self.print_ext('Creating test Tensorflow Tensors')
                     
                     # Create tensor with all test samples
-                    test_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size,self.graph_masks]
+                    test_samples = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size,self.graph_masks,self.graph_linear,self.graph_linear_mask]
                     test_samples = [s[self.test_idx, ...] for s in test_samples]
                     
                     # If using mini-batch we will need a queue 
@@ -520,7 +520,10 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         self.graph_adjacency = np.stack(self.graph_adjacency, axis=0)
         self.graph_labels = dataset[2]
         self.graph_masks = dataset[3].astype(np.int32)
-        self.i_to_word = dataset[4]
+        self.graph_linear = dataset[4]
+        self.graph_linear_mask = dataset[5]
+
+        self.i_to_word = dataset[6]
 
         self.no_samples = self.graph_labels.shape[0]
 

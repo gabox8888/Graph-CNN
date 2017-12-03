@@ -7,6 +7,8 @@ adj = []
 vertex = []
 labels = []
 masks = []
+linear = []
+linear_masks = [] 
 
 for i in range(10312,10400):
     if i % 1000 == 0 : print("currently at {}".format(i))
@@ -14,13 +16,17 @@ for i in range(10312,10400):
     vertex += [np.load(root + 'vertex_{}.npy'.format(i))]  
     labels += [np.load(root + 'labels_{}.npy'.format(i))] 
     masks += [np.load(root + 'masks_{}.npy'.format(i))]  
+    linear += [np.load(root + 'linear_{}.npy'.format(i))]  
+    linear_masks += [np.load(root + 'masks_linear_{}.npy'.format(i))]  
 
 adj = np.array(adj)
 vertex = np.array(vertex)
 labels = np.array(labels)
 masks = np.array(masks)
+linear = np.array(linear)
+linear_masks = np.array(linear_masks)
 i_word = pickle.load(open(root + 'amr_i_word.pkl','rb'))
-dataset = [adj,vertex,labels,masks,i_word]
+dataset = [adj,vertex,labels,masks,linear,linear_masks,i_word]
 
 # Decay value for BatchNorm layers, seems to work better with 0.3
 GraphCNNGlobal.BN_DECAY = 0.3
