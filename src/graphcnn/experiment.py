@@ -9,6 +9,7 @@ import time
 from tensorflow.python.training import queue_runner
 import pickle
 from random import randint,shuffle
+import pdb
 
 blue_score_arr = {}
 
@@ -297,6 +298,7 @@ class GraphCNNExperiment(object):
             self.create_loss_function()
             
             self.print_ext('Preparing training')
+            pdb.set_trace()
             loss = tf.add_n(tf.get_collection('losses'))
             if len(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)) > 0:
                 loss += tf.add_n(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
