@@ -149,6 +149,7 @@ class GraphCNNNetwork(object):
                 temp1 = tf.Print(temp1, [temp1], message="This is enc_state shape: ")
                 temp2 = tf.Print(temp2, [temp2], message="This is current_v shape: ")
                 test = tf.contrib.rnn.LSTMStateTuple(self.current_V,tf.concat([self.current_V, enc_state.h], 0))#tf.concat([self.current_V, enc_state.c], 0) 
+                test = tf.Print(test, [test], message="This is test: ")
                 print(test)
                 pdb.set_trace()
             else:
