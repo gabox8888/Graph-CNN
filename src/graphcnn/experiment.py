@@ -541,7 +541,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
     def create_data(self):
 
         def readNumpy(x):
-            return np.load(x)
+            return tf.convert_to_tensor(np.load(x))
 
         all_files = [i for i in range(self.min_num_file,self.max_num_file)]
         shuffle(all_files)
@@ -565,10 +565,10 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     training_samples = self.create_input_variable(training_samples)
                     print(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)                    
-                    single_sample[0] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[0]],tf.int32)), [ 400 ])
-                    single_sample[1] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[1]],tf.int32)), [ 400 ])
-                    single_sample[2] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[2]],tf.int32)), [ 400 ])
-                    single_sample[3] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[3]],tf.int32)), [ 400 ])
+                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.int32))
+                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.int32))
+                    single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.int32))
+                    single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.int32))
                     print(single_sample)
                     train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
