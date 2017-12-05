@@ -592,7 +592,6 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                         vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
                         labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
                         masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
-                    print(np.array(adj))
                     training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
@@ -608,11 +607,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[3].set_shape([100])
                     test_queue = _make_batch_queue(single_sample, capacity=self.test_batch_size*2, num_threads=1)
                         
-                result = tf.cond(self.net.is_training, lambda: train_queue.dequeue_many(self.train_batch_size), lambda: test_queue.dequeue_many(self.test_batch_size))
-
-                # Have to add placeholder for A and mask
-                result = [result[0], None, result[1], None]
-                return result
+                return tf.cond(self.net.is_training, lambda: train_queue.dequeue_many(self.train_batch_size), lambda: test_queue.dequeue_many(self.test_batch_size))
 
     def save_for_eval(self,preds,golds,iter,train):
         temp = []
