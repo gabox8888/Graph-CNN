@@ -570,6 +570,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
                     single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
+                    print(single_sample)
                     train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
                 # Create the test queue
