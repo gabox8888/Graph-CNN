@@ -569,6 +569,13 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.int32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.int32)
                     single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.int32)
+
+                    single_sample[0].set_shape([400])
+                    single_sample[1].set_shape([400])
+                    single_sample[2].set_shape([400])
+                    single_sample[3].set_shape([400])
+
+
                     print(single_sample)
                     train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
