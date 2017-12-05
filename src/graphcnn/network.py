@@ -17,6 +17,7 @@ class GraphCNNNetwork(object):
         self.pred = None
                 
     def create_network(self, input):
+        print(input)
         self.current_V = input[0]
         self.current_A = input[1]
         self.labels = input[2]
