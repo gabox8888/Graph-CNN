@@ -538,67 +538,67 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         
         single_sample = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size]
 
-    # def create_data(self):
+    def create_data(self):
 
-    #     def readNumpy(x):
-    #         return np.load(x)
+        def readNumpy(x):
+            return np.load(x)
 
-    #     all_files = [i for i in range(self.min_num_file,self.max_num_file)]
-    #     shuffle(all_files)
-    #     split = int(0.8*(self.max_num_file-self.min_num_file))
-    #     with tf.device("/cpu:0"):
-    #         with tf.variable_scope('input') as scope:
-    #             # Create the training queue
-    #             with tf.variable_scope('train_data') as scope:
-    #                 self.print_ext('Creating training Tensorflow Tensors')
+        all_files = [i for i in range(self.min_num_file,self.max_num_file)]
+        shuffle(all_files)
+        split = int(0.8*(self.max_num_file-self.min_num_file))
+        with tf.device("/cpu:0"):
+            with tf.variable_scope('input') as scope:
+                # Create the training queue
+                with tf.variable_scope('train_data') as scope:
+                    self.print_ext('Creating training Tensorflow Tensors')
                     
-    #                 adj = []
-    #                 vertex = []
-    #                 labels = []
-    #                 masks = []
-    #                 for i in all_files[:split]:
-    #                     adj += [self.root_dir + 'adjacency_{}.npy'.format(i)]
-    #                     vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
-    #                     labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
-    #                     masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
-    #                 training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
-    #                 training_samples = self.create_input_variable(training_samples)
-    #                 single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
+                    adj = []
+                    vertex = []
+                    labels = []
+                    masks = []
+                    for i in all_files[:split]:
+                        adj += [self.root_dir + 'adjacency_{}.npy'.format(i)]
+                        vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
+                        labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
+                        masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
+                    training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
+                    training_samples = self.create_input_variable(training_samples)
+                    single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
-    #                 single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
-    #                 single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
-    #                 single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
-    #                 single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
-    #                 train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
+                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
+                    single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
+                    single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
+                    train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
-    #             # Create the test queue
-    #             with tf.variable_scope('test_data') as scope:
-    #                 self.print_ext('Creating test Tensorflow Tensors')
+                # Create the test queue
+                with tf.variable_scope('test_data') as scope:
+                    self.print_ext('Creating test Tensorflow Tensors')
                     
-    #                 adj = []
-    #                 vertex = []
-    #                 labels = []
-    #                 masks = []
-    #                 for i in all_files[split:]:
-    #                     adj += [self.root_dir + 'adjacency_{}.npy'.format(i)]
-    #                     vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
-    #                     labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
-    #                     masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
-    #                 training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
-    #                 training_samples = self.create_input_variable(training_samples)
-    #                 single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
+                    adj = []
+                    vertex = []
+                    labels = []
+                    masks = []
+                    for i in all_files[split:]:
+                        adj += [self.root_dir + 'adjacency_{}.npy'.format(i)]
+                        vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
+                        labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
+                        masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
+                    training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
+                    training_samples = self.create_input_variable(training_samples)
+                    single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
-    #                 single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
-    #                 single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
-    #                 single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
-    #                 single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
-    #                 test_queue = _make_batch_queue(single_sample, capacity=self.test_batch_size*2, num_threads=1)
+                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
+                    single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
+                    single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
+                    test_queue = _make_batch_queue(single_sample, capacity=self.test_batch_size*2, num_threads=1)
                         
-    #             result = tf.cond(self.net.is_training, lambda: train_queue.dequeue_many(self.train_batch_size), lambda: test_queue.dequeue_many(self.test_batch_size))
+                result = tf.cond(self.net.is_training, lambda: train_queue.dequeue_many(self.train_batch_size), lambda: test_queue.dequeue_many(self.test_batch_size))
 
-    #             # Have to add placeholder for A and mask
-    #             result = [result[0], None, result[1], None]
-    #             return result
+                # Have to add placeholder for A and mask
+                result = [result[0], None, result[1], None]
+                return result
 
     def save_for_eval(self,preds,golds,iter,train):
         temp = []
