@@ -564,9 +564,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
                     print(training_samples)
-                    single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
-                    
-                    test = 
+                    single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)                    
                     single_sample[0] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[0]],tf.float32)), [ 400 ])
                     single_sample[1] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[1]],tf.float32)), [ 400 ])
                     single_sample[2] = tf.reshape(tf.concat(1, tf.py_func(readNumpy, [single_sample[2]],tf.float32)), [ 400 ])
