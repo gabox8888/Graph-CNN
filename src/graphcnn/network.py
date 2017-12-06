@@ -23,8 +23,8 @@ class GraphCNNNetwork(object):
         self.labels = input[2]
         self.current_mask = input[3]
         self.mask = input[4]
-        self.linear = input[5]
-        self.linear_mask = input[6]
+        # self.linear = input[5]
+        # self.linear_mask = input[6]
         
         if self.network_debug:
             size = tf.reduce_sum(self.current_mask, axis=1)
