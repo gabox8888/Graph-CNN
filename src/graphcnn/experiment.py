@@ -539,9 +539,22 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         single_sample = [self.graph_vertices, self.graph_adjacency, self.graph_labels, self.graph_size]
 
     def create_data(self):
+        meta = pickle.load(open(self.root_dir + "graph_shapes.pkl",'rb'))
+
+        graph_size = np.array([s[0] for s in meta[0]]).astype(np.int64)
+        
+        largest_graph = max(graph_size)
+
+        def readAndPadNumpy(x):
+            temp = np.load(x)
+            temp = np.pad(temp.astype(np.float32), ((0, largest_graph-temp.shape[0]), (0, 0)), 'constant', constant_values=(0))
+            return tf.convert_to_tensor(temp)
 
         def readNumpy(x):
-            return tf.convert_to_tensor(np.load(x))
+            temp = np.load(x)
+            return tf.convert_to_tensor(temp)
+
+        
 
         all_files = [i for i in range(self.min_num_file,self.max_num_file)]
         shuffle(all_files)
@@ -561,14 +574,14 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                         vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
                         labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
                         masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
-                    training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(masks)]
+                    training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(meta[0]),np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
                     print(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)                    
-                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
-                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
+                    single_sample[0] = tf.py_func(readAndPadNumpy, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readAndPadNumpy, [single_sample[1]],tf.float32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
-                    single_sample[3] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
+                    single_sample[4] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
 
                     single_sample[0].set_shape([400])
                     single_sample[1].set_shape([400])
