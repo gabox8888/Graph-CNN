@@ -575,7 +575,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                         adj += [self.root_dir + 'vertex_{}.npy'.format(i)]  
                         labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
                         masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
-                    training_samples = [np.array(vertex),np.array(adj),np.array(labels), np.array(meta[1]),np.array(masks)]
+                    training_samples = [np.array(vertex),np.array(adj),np.array(labels), np.array([largest_graph]),np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
                     print(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)                    
@@ -606,7 +606,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                         vertex += [self.root_dir + 'vertex_{}.npy'.format(i)]  
                         labels += [self.root_dir + 'labels_{}.npy'.format(i)] 
                         masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
-                    training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array(meta[1]),np.array(masks)]
+                    training_samples = [np.array(adj),np.array(vertex),np.array(labels), np.array([largest_graph]),np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
