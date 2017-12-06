@@ -546,9 +546,13 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         largest_graph = max(graph_size)
         print(largest_graph)
 
-        def readAndPadNumpy(x):
+        def readNumpyAdj(x):
             temp = np.load(x)
-            print(largest_graph-temp.shape[0],"FUCK")
+            temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0),(0, int(largest_graph-temp.shape[0]))), 'constant', constant_values=(0))
+            return temp
+
+        def readNumpyVtx(x):
+            temp = np.load(x)
             temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0)), 'constant', constant_values=(0))
             return temp
 
@@ -580,8 +584,8 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     training_samples = self.create_input_variable(training_samples)
                     print(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)                    
-                    single_sample[0] = tf.py_func(readAndPadNumpy, [single_sample[0]],tf.float32)
-                    single_sample[1] = tf.py_func(readAndPadNumpy, [single_sample[1]],tf.float32)
+                    single_sample[0] = tf.py_func(readNumpyVtx, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readNumpyAdj, [single_sample[1]],tf.float32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
                     single_sample[4] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
 
@@ -611,8 +615,8 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     training_samples = self.create_input_variable(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
-                    single_sample[0] = tf.py_func(readNumpy, [single_sample[0]],tf.float32)
-                    single_sample[1] = tf.py_func(readNumpy, [single_sample[1]],tf.float32)
+                    single_sample[0] = tf.py_func(readNumpyVtx, [single_sample[0]],tf.float32)
+                    single_sample[1] = tf.py_func(readNumpyAdj, [single_sample[1]],tf.float32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
                     single_sample[4] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
 
