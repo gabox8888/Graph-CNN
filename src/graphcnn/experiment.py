@@ -142,9 +142,9 @@ class GraphCNNExperiment(object):
     # Slice each sample to improve performance
     def crop_single_sample(self, single_sample):
         vertices = tf.slice(single_sample[0], np.array([0, 0], dtype=np.int64), tf.cast(tf.stack([single_sample[3], -1]), tf.int64))
-        vertices.set_shape([None, self.graph_vertices.shape[2]])
+        vertices.set_shape([None, 6002])
         adjacency = tf.slice(single_sample[1], np.array([0, 0, 0], dtype=np.int64), tf.cast(tf.stack([single_sample[3], -1, single_sample[3]]), tf.int64))
-        adjacency.set_shape([None, self.graph_adjacency.shape[2], None])
+        adjacency.set_shape([None,30, None])
         
         # V, A, labels, mask
         return [vertices, adjacency, single_sample[2],tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1),single_sample[4],single_sample[5],single_sample[6]]
