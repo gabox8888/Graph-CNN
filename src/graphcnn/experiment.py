@@ -541,7 +541,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
     def create_data(self):
         meta = pickle.load(open(self.root_dir + "graph_shapes.pkl",'rb'))
 
-        graph_size = np.array([s[0] for s in meta[1][self.min_num_file:self.max_num_file]]).astype(np.int64)   
+        graph_size = np.array([s[0] for s in meta[1][self.min_num_file:self.max_num_file]]).astype(np.float32)   
         print(graph_size)     
         largest_graph = max(graph_size)
 
