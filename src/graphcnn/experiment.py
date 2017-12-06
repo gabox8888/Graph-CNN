@@ -504,6 +504,7 @@ class SingleGraphCNNExperiment(GraphCNNExperiment):
 class GraphCNNWithRNNExperiment(GraphCNNExperiment):
     def preprocess_data(self, dataset):
         self.graph_size = np.array([s.shape[0] for s in dataset[0]]).astype(np.int64)
+        print(graph_size[:10])
         
         self.largest_graph = max(self.graph_size)
         self.print_ext('Padding samples')
