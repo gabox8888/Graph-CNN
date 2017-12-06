@@ -50,6 +50,12 @@ class AMRExperiment(object):
         
 exp = GraphCNNWithRNNExperiment('AMR', 'amr', AMRExperiment())
 
+exp.num_iterations = 450000
+
+exp.learning_rate_step = 100000
+exp.starter_learning_rate = 0.01
+exp.learning_rate_exp = 0.1
+
 exp.num_iterations = 1500
 exp.train_batch_size = 70
 exp.test_batch_size = 30
