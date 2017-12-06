@@ -545,7 +545,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         
         largest_graph = max(graph_size)
         print(largest_graph)
-        print(meta[1][:10],meta[2][:10],meta[3][:10],meta[4][:10],"poopy")
+        print(meta[1][:10],meta[2][:10],meta[3][:10],"poopy")
 
         def readAndPadNumpy(x):
             temp = np.load(x)
