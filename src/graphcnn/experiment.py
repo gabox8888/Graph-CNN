@@ -549,7 +549,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         def readAndPadNumpy(x):
             temp = np.load(x)
             print(largest_graph-temp.shape[0],"FUCK")
-            temp = np.pad(temp.astype(np.float32), ((0, largest_graph-temp.shape[0]), (0, 0)), 'constant', constant_values=(0))
+            temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0)), 'constant', constant_values=(0))
             return tf.convert_to_tensor(temp)
 
         def readNumpy(x):
