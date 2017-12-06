@@ -541,14 +541,12 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
     def create_data(self):
         meta = pickle.load(open(self.root_dir + "graph_shapes.pkl",'rb'))
 
-        graph_size = np.array([s[0] for s in meta[1][self.min_num_file:self.max_num_file]]).astype(np.float32)
-        print(graph_size,"MOTHER")
-        
+        graph_size = np.array([s[0] for s in meta[1][self.min_num_file:self.max_num_file]]).astype(np.float32)        
         largest_graph = max(graph_size)
-        print(largest_graph)
 
         def readNumpyAdj(x):
             temp = np.load(x)
+            print(temp,"POOP")
             temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0),(0, int(largest_graph-temp.shape[0]))), 'constant', constant_values=(0))
             return temp
 
