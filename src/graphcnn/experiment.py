@@ -591,7 +591,6 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[1].set_shape([largest_graph,30,largest_graph])
                     single_sample[2].set_shape([287])
                     single_sample[4].set_shape([287])
-                    print(single_sample)
 
                     train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
@@ -610,6 +609,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                         masks += [self.root_dir + 'masks_{}.npy'.format(i)]  
                     training_samples = [np.array(adj),np.array(vertex),np.array(labels), graph_size,np.array(masks)]
                     training_samples = self.create_input_variable(training_samples)
+                    print(training_samples)
                     single_sample = tf.train.slice_input_producer(training_samples, shuffle=True, capacity=self.train_batch_size)
                     
                     single_sample[0] = tf.py_func(readNumpyVtx, [single_sample[0]],tf.float32)
