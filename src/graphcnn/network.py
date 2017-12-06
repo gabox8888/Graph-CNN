@@ -155,10 +155,9 @@ class GraphCNNNetwork(object):
                 pdb.set_trace()
             else:
                 test = tf.contrib.rnn.LSTMStateTuple(self.current_V,self.current_V)
-                print(test)
-                pdb.set_trace()
+                # pdb.set_trace()
 
-            dec_embeddings = tf.Variable(tf.random_uniform([vocab_size, embedding_size]))
+            dec_embeddings = tf.Variable(tf.random_uniform([vocab_size, 10000000]))
             dec_cell = make_cell(number_units) #tf.contrib.rnn.MultiRNNCell([make_cell(number_units) for _ in range(1)])
             output_layer = layers_core.Dense(vocab_size, use_bias=False)
 
