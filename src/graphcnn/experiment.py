@@ -591,6 +591,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[1].set_shape([largest_graph,30,largest_graph])
                     single_sample[2].set_shape([287])
                     single_sample[4].set_shape([287])
+                    print(single_sample)
 
                     train_queue = _make_batch_queue(single_sample, capacity=self.train_batch_size*2, num_threads=8)
 
