@@ -544,6 +544,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         graph_size = np.array([s[0] for s in meta[0]]).astype(np.int64)
         
         largest_graph = max(graph_size)
+        print(largest_graph)
 
         def readAndPadNumpy(x):
             temp = np.load(x)
