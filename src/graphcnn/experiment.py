@@ -642,7 +642,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         with tf.variable_scope('loss') as scope:
             padded_size = self.net.mask.shape[1]
             masks = tf.sequence_mask(tf.reduce_sum(self.net.mask, 1), padded_size, dtype=tf.float32, name='masks')           
-            loss = tf.contrib.seq2seq.sequence_loss(self.net.current_V,self.net.labels,masks)
+            loss = tf.contrib.seq2seq.sequence_loss(self.net.current_V,tf.cast(self.net.labels,tf.int64),masks)
 
             tf.add_to_collection('losses', loss)
             tf.summary.scalar('loss', loss)
