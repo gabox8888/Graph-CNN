@@ -556,6 +556,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
         def readNumpy(x):
             temp = np.load(x)
+            print(temp)
             return temp
 
         
