@@ -584,7 +584,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[0] = tf.py_func(readNumpyVtx, [single_sample[0]],tf.float32)
                     single_sample[1] = tf.py_func(readNumpyAdj, [single_sample[1]],tf.float32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
-                    single_sample[4] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
+                    single_sample[4] = tf.py_func(readNumpy, [single_sample[4]],tf.float32)
 
                     single_sample[0].set_shape([30,largest_graph])
                     single_sample[1].set_shape([largest_graph,largest_graph])
@@ -613,7 +613,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[0] = tf.py_func(readNumpyVtx, [single_sample[0]],tf.float32)
                     single_sample[1] = tf.py_func(readNumpyAdj, [single_sample[1]],tf.float32)
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
-                    single_sample[4] = tf.py_func(readNumpy, [single_sample[3]],tf.float32)
+                    single_sample[4] = tf.py_func(readNumpy, [single_sample[4]],tf.float32)
 
                     single_sample[0].set_shape([30,largest_graph])
                     single_sample[1].set_shape([largest_graph,largest_graph])
