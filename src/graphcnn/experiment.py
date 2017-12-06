@@ -545,7 +545,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         
         largest_graph = max(graph_size)
         print(largest_graph)
-        print(meta[1][:10],"poopy")
+        print(meta[1][:10],meta[2][:10],meta[3][:10],meta[4][:10],"poopy")
 
         def readAndPadNumpy(x):
             temp = np.load(x)
@@ -587,8 +587,8 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
                     single_sample[0].set_shape([30,largest_graph])
                     single_sample[1].set_shape([largest_graph,largest_graph])
-                    # single_sample[2].set_shape([400])
-                    # single_sample[4].set_shape([400])
+                    single_sample[2].set_shape([400])
+                    single_sample[4].set_shape([400])
 
 
                     print(single_sample)
@@ -618,8 +618,8 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
                     single_sample[0].set_shape([30,largest_graph])
                     single_sample[1].set_shape([largest_graph,largest_graph])
-                    # single_sample[2].set_shape([])
-                    # single_sample[4].set_shape([100])
+                    single_sample[2].set_shape([])
+                    single_sample[4].set_shape([100])
                     test_queue = _make_batch_queue(single_sample, capacity=self.test_batch_size*2, num_threads=1)
                         
                 return tf.cond(self.net.is_training, lambda: train_queue.dequeue_many(self.train_batch_size), lambda: test_queue.dequeue_many(self.test_batch_size))
