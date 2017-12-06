@@ -57,7 +57,7 @@ exp.debug = True
 
 # exp.preprocess_data(dataset)
 exp.min_num_file = 11000
-exp.max_num_file = 110020
+exp.max_num_file = 11020
 exp.root_dir = root
 exp.i_to_word = i_word
 exp.no_samples = 20
