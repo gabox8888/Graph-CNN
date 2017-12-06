@@ -147,7 +147,7 @@ class GraphCNNExperiment(object):
         adjacency.set_shape([None,30, None])
         
         # V, A, labels, mask
-        return [vertices, adjacency, single_sample[2],tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1),single_sample[4],single_sample[5],single_sample[6]]
+        return [vertices, adjacency, single_sample[2],tf.expand_dims(tf.ones(tf.slice(tf.shape(vertices), [0], [1])), axis=-1),single_sample[4]]#,single_sample[5],single_sample[6]
         
     def create_input_variable(self, input):
         for i in range(len(input)):
