@@ -22,6 +22,8 @@ class GraphCNNNetwork(object):
         self.labels = input[2]
         self.current_mask = input[3]
         self.mask = input[4]
+
+        print(self.current_mask,"sdgkj")
         # self.linear = input[5]
         # self.linear_mask = input[6]
         
