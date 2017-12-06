@@ -19,6 +19,8 @@ for i in range(10312,20000):
     linear += [np.load(root + 'linear_{}.npy'.format(i))]  
     linear_masks += [np.load(root + 'masks_linear_{}.npy'.format(i))]  
 
+i_word = pickle.load(open(root + 'amr_i_word.pkl','rb'))
+
 adj = np.array(adj)
 vertex = np.array(vertex)
 labels = np.array(labels)
@@ -27,7 +29,6 @@ linear = np.array(linear)
 linear_masks = np.array(linear_masks)
 dataset = [adj,vertex,labels,masks,linear,linear_masks,i_word]
 
-i_word = pickle.load(open(root + 'amr_i_word.pkl','rb'))
 
 # Decay value for BatchNorm layers, seems to work better with 0.3
 GraphCNNGlobal.BN_DECAY = 0.3
