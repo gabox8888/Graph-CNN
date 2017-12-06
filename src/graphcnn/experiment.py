@@ -547,17 +547,16 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
         def readNumpyAdj(x):
             temp = np.load(x)
             temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0),(0, int(largest_graph-temp.shape[0]))), 'constant', constant_values=(0))
-            print(x,temp,"POOP")
-            return temp
+            return tf.convert_to_tensor(temp)
 
         def readNumpyVtx(x):
             temp = np.load(x)
             temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0)), 'constant', constant_values=(0))
-            return temp
+            return tf.convert_to_tensor(temp)
 
         def readNumpy(x):
             temp = np.load(x)
-            return temp
+            return tf.convert_to_tensor(temp)
 
         
 
