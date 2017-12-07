@@ -298,7 +298,6 @@ class GraphCNNExperiment(object):
             self.create_loss_function()
             
             self.print_ext('Preparing training')
-            pdb.set_trace()
             loss = tf.add_n(tf.get_collection('losses'))
             if len(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)) > 0:
                 loss += tf.add_n(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES))
@@ -551,7 +550,6 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
         def readNumpyVtx(x):
             temp = np.load(x)
-            print(temp.shape)
             temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0)), 'constant', constant_values=(0))
             return temp
 
