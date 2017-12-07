@@ -36,18 +36,19 @@ GraphCNNGlobal.BN_DECAY = 0.3
 class AMRExperiment(object):
     def create_network(self, net, input):
         net.create_network(input)
-        net.make_graphcnn_layer(64)
-        net.make_graphcnn_layer(64)
+        net.make_graphcnn_layer(96)
         net.make_graph_embed_pooling(no_vertices=32)
-
-        net.make_graphcnn_layer(32)
-        net.make_graphcnn_layer(32)
-        net.make_graph_embed_pooling(no_vertices=8)
-            
-        net.make_graphcnn_layer(8)
-        
-        net.make_graph_embed_pooling(no_vertices=8)
-        net.make_fc_layer(300)
+        net.make_graphcnn_layer(256)
+        net.make_graph_embed_pooling(no_vertices=32)
+        net.make_graphcnn_layer(384)
+        net.make_graphcnn_layer(384)
+        net.make_graphcnn_layer(256)
+        net.make_graph_embed_pooling(no_vertices=32)
+        net.make_fc_layer(4096, with_bn=True)
+        net.make_dropout_layer()
+        net.make_fc_layer(4096, with_bn=True)
+        net.make_dropout_layer()
+        net.make_fc_layer(300, with_act_func=True)
 
             
         net.make_rnn_layer(300,200,6504)
