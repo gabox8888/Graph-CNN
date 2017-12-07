@@ -68,10 +68,11 @@ exp.optimizer = 'adam'
 exp.debug = True
 
 # exp.preprocess_data(dataset)
-exp.min_num_file = 11000
-exp.max_num_file = 251000
+
+exp.min_num_file = 10312
+exp.max_num_file = 50000
 exp.root_dir = root
 exp.i_to_word = i_word
-exp.no_samples = 240000
+exp.no_samples = exp.max_num_file - exp.min_num_file
 acc, std = exp.run_kfold_experiments(no_folds=10)
 print_ext('10-fold: %.2f (+- %.2f)' % (acc, std))
