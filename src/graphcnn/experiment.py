@@ -551,6 +551,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
 
         def readNumpyVtx(x):
             temp = np.load(x)
+            print(temp.shape)
             temp = np.pad(temp.astype(np.float32), ((0, int(largest_graph-temp.shape[0])), (0, 0)), 'constant', constant_values=(0))
             return temp
 
