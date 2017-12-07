@@ -151,7 +151,6 @@ class GraphCNNExperiment(object):
         
     def create_input_variable(self, input):
         for i in range(len(input)):
-            print(input[i].shape)
             placeholder = tf.placeholder(tf.as_dtype(input[i].dtype), shape=input[i].shape)
             var = tf.Variable(placeholder, trainable=False, collections=[tf.GraphKeys.LOCAL_VARIABLES])
             self.variable_initialization[placeholder] = input[i]

@@ -39,8 +39,12 @@ class AMRExperiment(object):
         net.make_graphcnn_layer(64)
         net.make_graphcnn_layer(64)
         net.make_graph_embed_pooling(no_vertices=32)
-            
+
         net.make_graphcnn_layer(32)
+        net.make_graphcnn_layer(32)
+        net.make_graph_embed_pooling(no_vertices=8)
+            
+        net.make_graphcnn_layer(8)
         
         net.make_graph_embed_pooling(no_vertices=8)
         net.make_fc_layer(300)
