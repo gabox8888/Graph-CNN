@@ -142,7 +142,7 @@ class GraphCNNExperiment(object):
     # Slice each sample to improve performance
     def crop_single_sample(self, single_sample):
         vertices = tf.slice(single_sample[0], np.array([0, 0], dtype=np.int64), tf.cast(tf.stack([single_sample[3], -1]), tf.int64))
-        vertices.set_shape([None, 6002])
+        vertices.set_shape([None, 6001])
         adjacency = tf.slice(single_sample[1], np.array([0, 0, 0], dtype=np.int64), tf.cast(tf.stack([single_sample[3], -1, single_sample[3]]), tf.int64))
         adjacency.set_shape([None,30, None])
         
@@ -585,7 +585,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
                     single_sample[4] = tf.py_func(readNumpy, [single_sample[4]],tf.float32)
 
-                    single_sample[0].set_shape([largest_graph,6002])
+                    single_sample[0].set_shape([largest_graph,6001])
                     single_sample[1].set_shape([largest_graph,30,largest_graph])
                     single_sample[2].set_shape([287])
                     single_sample[4].set_shape([287])
@@ -616,7 +616,7 @@ class GraphCNNWithRNNExperiment(GraphCNNExperiment):
                     single_sample[2] = tf.py_func(readNumpy, [single_sample[2]],tf.float32)
                     single_sample[4] = tf.py_func(readNumpy, [single_sample[4]],tf.float32)
 
-                    single_sample[0].set_shape([largest_graph,6002])
+                    single_sample[0].set_shape([largest_graph,6001])
                     single_sample[1].set_shape([largest_graph,30,largest_graph])
                     single_sample[2].set_shape([287])
                     single_sample[4].set_shape([287])
