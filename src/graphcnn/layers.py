@@ -24,7 +24,6 @@ def make_variable_with_weight_decay(name, shape, stddev=0.01, wd=0.0005):
     return var
     
 def make_bn(input, phase, axis=-1, epsilon=0.001, mask=None, num_updates=None, name=None):
-    print(input,mask,"GLUP")
     default_decay = GraphCNNGlobal.BN_DECAY
     with tf.variable_scope(name, default_name='BatchNorm') as scope:
         input_size = input.get_shape()[axis].value

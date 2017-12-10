@@ -1,7 +1,7 @@
 from graphcnn.experiment import *
 import pickle
 
-root = "./datasets/amr/"
+root = "./datasets/amr/rev_"
 
 adj = []
 vertex = []
